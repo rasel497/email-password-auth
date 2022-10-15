@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
 import app from '../firebase/firebase.init';
 import { Link } from 'react-router-dom';
 
@@ -46,11 +46,20 @@ const RegisterReactBootstrap = () => {
                 console.log(user);
 
                 setSuccess(true);
-                form.reset() // clear from after successfully created
+                form.reset(); // clear from after successfully created
+                verifyEmail();
             })
             .catch(error => {
                 console.error('error: ', error);
                 setPasswordError(error.message);
+            })
+    }
+
+    /// verification
+    const verifyEmail = () => {
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                alert('Please check your email and verify your email address.')
             })
     }
 
