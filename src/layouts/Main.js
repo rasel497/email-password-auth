@@ -10,6 +10,7 @@ const Main = () => {
                 <Link to='/login'>Login</Link>
                 <Link to='/register'>Register</Link>
             </nav>
+            <h2 className='header5'>My Simple Email Authentication System.</h2>
             <Outlet></Outlet>
         </div>
     );

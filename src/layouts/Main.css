@@ -18,3 +18,10 @@
 .nav-link a:hover {
     color: tomato;
 }
+
+.header5 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
