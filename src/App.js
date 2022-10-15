@@ -1,26 +1,32 @@
 import './App.css';
 import { getAuth } from 'firebase/auth'
 import app from './firebase/firebase.init';
+import RegisterReactBootstrap from './componants/RegisterReactBootstrap';
+
 
 const auth = getAuth(app)
 
 //handleRegister
 const handleRegister = (event) => {
   event.preventDefault();
-  console.log(event)
+  const email = event.target.email.value;
+  const password = event.target.password.value;
+  console.log(email, password);
 }
 
+const handleEmailOnBlur = event => {
+  console.log(event.target.value)
+}
+
+const handlePasswordOnBlur = event => {
+  console.log(event.target.value);
+}
 
 function App() {
   return (
-    <div className="App">
-      <form onSubmit={handleRegister}>
-        <input type="email" name='email' id='' placeholder='your email' />
-        <br />
-        <input type="passwod" name='password' id='' placeholder='your password' />
-        <br />
-        <button type='submit'>Register</button>
-      </form>
+
+    <div className="">
+      <RegisterReactBootstrap></RegisterReactBootstrap>
     </div>
   );
 }
