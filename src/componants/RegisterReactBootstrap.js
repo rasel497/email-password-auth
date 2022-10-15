@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
@@ -9,20 +9,47 @@ import app from '../firebase/firebase.init';
 const auth = getAuth(app)
 
 const RegisterReactBootstrap = () => {
+    const [passwordError, setPasswordError] = useState('');
+    const [success, setSuccess] = useState(false);
+
     const handleRegisterOnSubmit = event => {
-        // use it no reload on submit
+        //01. use it no reload on submit
         event.preventDefault();
-        const email = event.target.email.value;
-        const password = event.target.password.value;
+        setSuccess(false); // when error then its don not show UI
+
+        const form = event.target;
+        const email = form.email.value;
+        const password = form.password.value;
         console.log(email, password);
-        //02. start firebase setup
+        // valid password strength in JS
+        if (!/(?=.*[A-Z].*[A-Z])/.test(password)) {
+            setPasswordError('Please provide at least two uppercase');
+            return;
+        }
+        if (password.length < 6) {
+            setPasswordError('Please should be at least 6 charcters.');
+            return;
+        }
+        if (!/(?=.*[!@#$&*])/.test(password)) {
+            setPasswordError('Please add at least one special chartcer');
+            return;
+            // /[*$@#&!]+/
+        }
+        setPasswordError(''); // no error call
+
+
+        //01. start firebase setup
         createUserWithEmailAndPassword(auth, email, password)
             .then(result => {
                 const user = result.user;
                 console.log(user);
+
+                setSuccess(true);
+                form.reset() // clear from after successfully created
             })
             .catch(error => {
                 console.error('error: ', error);
+                setPasswordError(error.message);
             })
     }
 
@@ -42,6 +69,9 @@ const RegisterReactBootstrap = () => {
                 {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" label="Check me out" />
                 </Form.Group> */}
+
+                <p className='text-danger'>{passwordError}</p>
+                {success && <p className='text-success'>User created successfully.</p>}
                 <Button variant="primary" type="submit">
                     Register
                 </Button>
