@@ -7,6 +7,8 @@ const auth = getAuth(app);
 
 const LoginBootstrap = () => {
     const [success, setSuccess] = useState();
+    // onBlur rset
+    const [userEmail, setUserEmail] = useState('');
 
     const handleOnSubmit = event => {
         event.preventDefault();
@@ -28,10 +30,26 @@ const LoginBootstrap = () => {
                 console.error('error', error)
             })
     }
+    // reset
+    const hnadleEmailBlur = event => {
+        const email = event.target.value;
+        setUserEmail(email);
+        console.log(email);
+    }
 
     // forgate password
     const handleForgatePassword = () => {
-        sendPasswordResetEmail(auth,)
+        if (!userEmail) {
+            alert('Please enter your email address.')
+            return;
+        }
+        sendPasswordResetEmail(auth, userEmail)
+            .then(() => {
+                alert('Password reset eamail sent. Plaease check your email.');
+            })
+            .catch(error => {
+                console.error(error);
+            })
     }
 
     return (
@@ -40,7 +58,7 @@ const LoginBootstrap = () => {
             <form onSubmit={handleOnSubmit}>
                 <div className="mb-3">
                     <label htmlFor="formGroupExampleInput" className="form-label">Email Address</label>
-                    <input type="email" name='email' className="form-control" id="formGroupExampleInput" placeholder="your email" required />
+                    <input onBlur={hnadleEmailBlur} type="email" name='email' className="form-control" id="formGroupExampleInput" placeholder="your email" required />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="formGroupExampleInput2" className="form-label">Password</label>
@@ -51,7 +69,7 @@ const LoginBootstrap = () => {
 
             {success && <p>Sucessfully login to the account.</p>}
             <p><small>New to this website? Please <Link to='/register'>Register</Link> </small></p>
-            <p>Forgate Password? <small><button onClick={handleForgatePassword} type="button" className="btn btn-link">Please Reset</button></small></p>
+            <p>Forgate Password? <small><button onClick={handleForgatePassword} type="button" className="btn btn-link">Reset password</button></small></p>
         </div>
     );
 };

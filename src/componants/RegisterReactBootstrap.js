@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, updateProfile } from "firebase/auth";
 import app from '../firebase/firebase.init';
 import { Link } from 'react-router-dom';
 
@@ -19,9 +19,10 @@ const RegisterReactBootstrap = () => {
         setSuccess(false); // when error then its don not show UI
 
         const form = event.target;
+        const name = form.name.value;
         const email = form.email.value;
         const password = form.password.value;
-        console.log(email, password);
+        console.log(name, email, password);
         // valid password strength in JS
         if (!/(?=.*[A-Z].*[A-Z])/.test(password)) {
             setPasswordError('Please provide at least two uppercase');
@@ -48,6 +49,7 @@ const RegisterReactBootstrap = () => {
                 setSuccess(true);
                 form.reset(); // clear from after successfully created
                 verifyEmail();
+                updateUserName(name);
             })
             .catch(error => {
                 console.error('error: ', error);
@@ -63,22 +65,37 @@ const RegisterReactBootstrap = () => {
             })
     }
 
+    // update user Profile name
+    const updateUserName = (name) => {
+        updateProfile(auth.currentUser, {
+            displayName: name
+        })
+            .then(() => {
+                console.log('Display and your name is successfully updated.')
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    }
+
     return (
         <div className='w-50 mx-auto'>
             <h2 className='text-primary'>Please Register!!</h2>
             <Form onSubmit={handleRegisterOnSubmit}>
+                <Form.Group className="mb-3" controlId="formBasicName">
+                    <Form.Label>Your Name</Form.Label>
+                    <Form.Control type="text" name="name" placeholder="Enter your name" required />
+                </Form.Group>
+
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" name="email" placeholder="Enter email" required />
+                    <Form.Control type="email" name="email" placeholder="Enter your email" required />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" name="password" placeholder="Password" required />
+                    <Form.Control type="password" name="password" placeholder="Enter your password" required />
                 </Form.Group>
-                {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
-                </Form.Group> */}
 
                 <p className='text-danger'>{passwordError}</p>
                 {success && <p className='text-success'>User created successfully.</p>}
